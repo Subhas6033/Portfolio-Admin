@@ -10,8 +10,8 @@ const Navbar = () => {
 
   const navItems = [
     { name: "Home", slug: "/" },
-    { name: "Update About & Achievements", slug: "/update-about" },
-    { name: "Update Image", slug: "/update-image" },
+    { name: "Update Achievements", slug: "/update-about" },
+    { name: "Update Resume Link", slug: "/update-image" },
     { name: "Update Projects", slug: "/update-projects" },
     { name: "Login", slug: "/login" },
   ];
