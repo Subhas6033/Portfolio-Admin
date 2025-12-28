@@ -27,7 +27,7 @@ const Navbar = () => {
         {/* Logo */}
         <h1
           onClick={() => handleNavigate("/")}
-          className="text-lg md:text-xl font-bold tracking-tight cursor-pointer text-slate-800 hover:text-blue-600 transition-colors"
+          className="text-lg md:text-xl font-semibold tracking-tight cursor-pointer text-slate-900 hover:text-indigo-600 transition-colors"
         >
           Portfolio Admin
         </h1>
@@ -41,11 +41,11 @@ const Navbar = () => {
               <li
                 key={item.slug}
                 onClick={() => handleNavigate(item.slug)}
-                className={`relative cursor-pointer text-md font-medium transition-all
+                className={`relative cursor-pointer text-md font-medium transition-colors
                   ${
                     isActive
-                      ? "text-blue-600"
-                      : "text-slate-700 hover:text-blue-500"
+                      ? "text-indigo-600"
+                      : "text-slate-600 hover:text-slate-900"
                   }
                 `}
               >
@@ -53,7 +53,7 @@ const Navbar = () => {
 
                 {/* Active underline */}
                 {isActive && (
-                  <span className="absolute -bottom-2 left-0 h-0.5 w-full bg-blue-600 rounded-full" />
+                  <span className="absolute -bottom-2 left-0 h-0.5 w-full bg-indigo-600 rounded-full" />
                 )}
               </li>
             );
@@ -63,7 +63,7 @@ const Navbar = () => {
         {/* Mobile Toggle */}
         <Button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 rounded-lg hover:bg-slate-100"
+          className="md:hidden p-2 rounded-lg text-slate-700 hover:bg-slate-100"
           aria-label="Toggle Menu"
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -82,11 +82,11 @@ const Navbar = () => {
               key={item.slug}
               onClick={() => handleNavigate(item.slug)}
               className={`px-6 py-4 font-medium cursor-pointer transition-all duration-200
-        ${
-          location.pathname === item.slug
-            ? "bg-blue-50 text-blue-600 border-l-4 border-blue-600"
-            : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-        }`}
+                ${
+                  location.pathname === item.slug
+                    ? "bg-indigo-50 text-indigo-600 border-l-4 border-indigo-600"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                }`}
             >
               {item.name}
             </li>
