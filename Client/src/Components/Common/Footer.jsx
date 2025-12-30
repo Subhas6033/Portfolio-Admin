@@ -24,8 +24,8 @@ const Footer = () => {
 
           {/* Social */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wide text-white">
-              Follow us
+            <h4 className="text-sm text-center font-semibold uppercase tracking-wide text-white">
+              Follow me
             </h4>
             <div className="mt-4 flex space-x-4">
               <li

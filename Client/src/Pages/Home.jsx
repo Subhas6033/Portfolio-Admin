@@ -3,7 +3,9 @@ import { HeroSection } from "../Components/index";
 const Home = () => {
   return (
     <>
-      <HeroSection />
+      <div className="flex justify-center items-center ease-in duration-150 scroll-smooth">
+        <HeroSection />
+      </div>
     </>
   );
 };
