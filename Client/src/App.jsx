@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "./Layout/Layout";
 import { Outlet } from "react-router-dom";
+import { Loader } from "./Components/index";
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => {
+      clearTimeout(timer);
+      console.log("Expires after 2 sec");
+    };
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black flex justify-center items-center">
+        <Loader text="applications" />
+      </div>
+    );
+  }
+
   return (
     <Layout>
       <Outlet />
