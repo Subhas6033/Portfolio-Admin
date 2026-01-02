@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
     <div className="min-h-screen bg-slate-900 text-slate-100">
       <Navbar />
 
-      <main className="min-h-[calc(100vh-128px)] px-6 py-4">{children}</main>
+      <main className="min-h-[calc(100vh-128px)] px-2">{children}</main>
 
       <Footer />
     </div>

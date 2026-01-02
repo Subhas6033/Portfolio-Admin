@@ -28,14 +28,10 @@ const Card = ({
         {(title || description) && (
           <div className="mb-4">
             {title && (
-              <h2 className="text-lg text-center font-semibold text-slate-800">
-                {title}
-              </h2>
+              <h2 className="text-2xl text-center font-semibold">{title}</h2>
             )}
             {description && (
-              <p className="text-sm text-center text-slate-500 mt-1">
-                {description}
-              </p>
+              <p className="text-sm text-center mt-1">{description}</p>
             )}
           </div>
         )}

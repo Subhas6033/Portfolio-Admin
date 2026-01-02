@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "motion/react";
 import { Button, Input, Card } from "../../Components/index";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -18,25 +19,38 @@ const Signup = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmitForm = (data) => {
     console.log("Submitted Data", data);
     setIsSubmitting(true);
-    // TODO: Handel API Calls
   };
 
-  const navigate = useNavigate();
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <form
+    <div className="relative min-h-screen flex items-center justify-center bg-slate-900 overflow-hidden px-4">
+      {/* Background glows */}
+      <motion.div
+        className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-indigo-500/20 blur-3xl"
+        animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-cyan-500/20 blur-3xl"
+        animate={{ x: [0, -40, 0], y: [0, -30, 0] }}
+        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      <motion.form
         onSubmit={handleSubmit(handleSubmitForm)}
-        className="w-full max-w-md"
+        className="relative z-10 w-full max-w-md"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <Card
           title="Sign Up"
           description="Create your account to access the dashboard"
-          className="space-y-4"
+          className="bg-white/5 backdrop-blur-xl border border-white/10 text-slate-100"
         >
           <div className="space-y-4">
             <Input
@@ -47,6 +61,7 @@ const Signup = () => {
                 required: "Full name is required",
               })}
               error={errors.fullName?.message}
+              className="bg-slate-900 text-white placeholder:text-slate-500 border-white/10"
             />
 
             <Input
@@ -62,6 +77,7 @@ const Signup = () => {
                 },
               })}
               error={errors.email?.message}
+              className="bg-slate-900 text-white placeholder:text-slate-500 border-white/10"
             />
 
             <Input
@@ -72,34 +88,34 @@ const Signup = () => {
               {...register("mobileNumber", {
                 required: "Mobile number is required",
                 pattern: {
-                  value: /^[0-9]{10}$/, // 10 digit number
+                  value: /^[0-9]{10}$/,
                   message: "Enter a valid 10-digit mobile number",
                 },
               })}
               error={errors.mobileNumber?.message}
+              className="bg-slate-900 text-white placeholder:text-slate-500 border-white/10"
             />
 
             <Button
               type="submit"
-              className={`w-full mt-2 ${
-                !isValid ? "opacity-50 cursor-not-allowed" : ""
-              }`}
               disabled={!isValid || isSubmitting}
+              className="w-full mt-2 bg-indigo-600 hover:bg-indigo-500 transition"
             >
-              {isSubmitting ? "Creating Account" : "Create Account"}
+              {isSubmitting ? "Creating Account..." : "Create Account"}
             </Button>
           </div>
-          <p className="mt-3 text-center">
-            Already Have an Account?{" "}
+
+          <p className="mt-4 text-center text-slate-400">
+            Already have an account?{" "}
             <span
-              className="text-red-600 hover:cursor-pointer hover:underline"
+              className="text-indigo-400 hover:underline cursor-pointer"
               onClick={() => navigate("/login")}
             >
               Please Login
             </span>
           </p>
         </Card>
-      </form>
+      </motion.form>
     </div>
   );
 };
