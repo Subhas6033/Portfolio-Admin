@@ -1,6 +1,8 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+// import data from "./Routes/GetData.routes.js";
+import authRoutes from "./Routes/Auth.routes.js";
 
 const app = express();
 
@@ -26,5 +28,8 @@ app.use(
 );
 
 app.use(cookieParser());
+
+// app.use("/api/data", data);
+app.use("/api/auth", authRoutes);
 
 export { app };

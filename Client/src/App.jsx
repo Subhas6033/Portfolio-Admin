@@ -12,7 +12,6 @@ const App = () => {
     }, 2000);
     return () => {
       clearTimeout(timer);
-      console.log("Expires after 2 sec");
     };
   }, []);
 

@@ -21,7 +21,9 @@ const Modal = ({ isOpen, title, children, footer, size = "md" }) => {
         {/* Header */}
         {title && (
           <div className="px-6 py-4 border-b border-slate-200">
-            <h2 className="text-lg font-semibold text-slate-800">{title}</h2>
+            <h2 className="text-lg text-center font-semibold text-slate-800">
+              {title}
+            </h2>
           </div>
         )}
 
