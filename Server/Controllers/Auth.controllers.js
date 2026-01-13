@@ -7,7 +7,7 @@ const generateRefreshAndAccessToken = async (userId) => {
     const refreshToken = user.generateRefreshToken();
     const accessToken = user.generateAccessToken();
     await user.hashRefreshToken(refreshToken);
-    user.save({ validateBeforeSave: false });
+    await user.save({ validateBeforeSave: false });
     return { refreshToken, accessToken };
   } catch (error) {
     console.log("Error While Generating the Tokens", error);
@@ -16,13 +16,13 @@ const generateRefreshAndAccessToken = async (userId) => {
 };
 
 const signUp = asyncHandler(async (req, res) => {
-  const { fullName, email, mobileNumber, profilePhoto, password } = req.body;
+  const { fullName, email, mobileNumber, password } = req.body;
   if (
-    [fullName, email, mobileNumber, profilePhoto, password].some(
+    [fullName, email, mobileNumber, password].some(
       (fields) => !fields || fields.trim() === ""
     )
   ) {
-    return new APIERR(400, "All fields are required and must not be empty.");
+    throw new APIERR(400, "All fields are required and must not be empty.");
   }
 
   const existingAdmin = await Admin.findOne({ email: email.trim() });
@@ -33,19 +33,12 @@ const signUp = asyncHandler(async (req, res) => {
     fullName,
     email,
     mobileNumber,
-    profilePhoto,
     password,
-    refreshToken,
   });
 
-  const findCreatedAdmin = await Admin.findById(createAdmin._id).select(
-    "-password -refreshToken"
-  );
+  await Admin.findById(createAdmin._id).select("-password -refreshToken");
 
-  const refreshToken = findCreatedAdmin.generateRefreshAndAccessToken(
-    createAdmin._id
-  );
-  const accessToken = findCreatedAdmin.generateRefreshAndAccessToken(
+  const { refreshToken, accessToken } = await generateRefreshAndAccessToken(
     createAdmin._id
   );
 
@@ -68,8 +61,62 @@ const signUp = asyncHandler(async (req, res) => {
     .json(new APIRES(201, createAdmin, "Admin created successfully."));
 });
 
-const login = asyncHandler(async (req, res) => {});
+const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  if ([email, password].some((f) => !f || f.trim() === ""))
+    throw new APIERR(404, "Please provide valid credentials to login.");
 
-const logout = asyncHandler(async (req, res) => {});
+  const isAdminExists = await Admin.findOne({ email });
+  if (!isAdminExists) throw new APIERR(404, "Admin not found with this email.");
 
-export { signUp };
+  const isPasswordCorrect = await isAdminExists.isPasswordCorrect(password);
+  if (!isPasswordCorrect) throw new APIERR(401, "Password is incorrect.");
+
+  const { refreshToken, accessToken } = await generateRefreshAndAccessToken(
+    isAdminExists._id
+  );
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    path: "/",
+  });
+
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    maxAge: 15 * 60 * 1000, // 15 minutes
+    path: "/",
+  });
+
+  res.status(200).json(new APIRES(200, "Admin logged in successfully."));
+});
+
+const logout = asyncHandler(async (req, res) => {
+  // Delete refreshToken from database
+  console.log("Logging out user:", req?.user);
+  await Admin.findByIdAndUpdate(req.user._id, {
+    $unset: { refreshToken: 1 },
+  });
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    path: "/",
+  });
+
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    path: "/",
+  });
+
+  res.status(200).json(new APIRES(200, "Admin logged out successfully."));
+});
+
+export { signUp, login, logout };

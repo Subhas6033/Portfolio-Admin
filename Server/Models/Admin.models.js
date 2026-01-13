@@ -48,26 +48,25 @@ const adminSchema = new mongoose.Schema(
 );
 
 // Hash the password before saving in the database
-adminSchema.pre("save", async (next) => {
-  if (!this.isModified("password")) return next();
+adminSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
 
 // Attach method to compare password
-adminSchema.methods.isPasswordCorrect = async (password) => {
+adminSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
 // Attach method to generate refreshToken
-adminSchema.methods.generateRefreshToken = () => {
+adminSchema.methods.generateRefreshToken = function () {
   return jwt.sign({ _id: this._id }, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
   });
 };
 
 // Attach method to generate accessToken
-adminSchema.methods.generateAccessToken = () => {
+adminSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     { _id: this._id, email: this.email },
     process.env.ACCESS_TOKEN_SECRET,
@@ -78,7 +77,7 @@ adminSchema.methods.generateAccessToken = () => {
 };
 
 // Hash the refreshToken before saving in the database
-adminSchema.methods.hashRefreshToken = async (refreshToken) => {
+adminSchema.methods.hashRefreshToken = async function (refreshToken) {
   const salt = await bcrypt.genSalt(10);
   const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
   this.refreshToken = hashedRefreshToken;
@@ -86,7 +85,7 @@ adminSchema.methods.hashRefreshToken = async (refreshToken) => {
 };
 
 // Attach method to compare refreshToken with the hashed version
-adminSchema.methods.isRefreshTokenCorrect = async (refreshToken) => {
+adminSchema.methods.isRefreshTokenCorrect = async function (refreshToken) {
   return await bcrypt.compare(refreshToken, this.refreshToken);
 };
 
